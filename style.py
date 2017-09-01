@@ -81,6 +81,12 @@ CAFFENET_WEIGHTS = {"content": {"conv4": 1},
                               "conv3": 0.2,
                               "conv4": 0.2,
                               "conv5": 0.2}}
+FLICKRSTYLE_WEIGHTS = {"content": {"conv4": 1},
+                    "style": {"conv1": 0.2,
+                              "conv2": 0.2,
+                              "conv3": 0.2,
+                              "conv4": 0.2,
+                              "conv5": 0.2}}
 
 # argparse
 parser = argparse.ArgumentParser(description="Transfer the style of one image to another.",
@@ -255,6 +261,13 @@ class StyleTransfer(object):
             pretrained_file = os.path.join(base_path, "bvlc_reference_caffenet.caffemodel")
             mean_file = os.path.join(base_path, "ilsvrc_2012_mean.npy")
             weights = CAFFENET_WEIGHTS
+
+        # Flickr style
+        elif model_name == "flickrstyle":
+            model_file = os.path.join(base_path, "deploy.prototxt")
+            pretrained_file = os.path.join(base_path, "finetune_flickr_style.caffemodel")
+            mean_file = os.path.join(base_path, "ilsvrc_2012_mean.npy")
+            weights = FLICKRSTYLE_WEIGHTS
 
         else:
             assert False, "model not available"

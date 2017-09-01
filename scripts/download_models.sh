@@ -12,3 +12,6 @@ fi
 if [ "$#" == 0 ] || [ "$1" == "vgg19" ]; then
     curl "http://www.robots.ox.ac.uk/~vgg/software/very_deep/caffe/VGG_ILSVRC_19_layers.caffemodel" -o models/vgg19/VGG_ILSVRC_19_layers.caffemodel
 fi
+if [ "$#" == 0 ] || [ "$1" == "flickrstyle" ]; then
+    curl "http://dl.caffe.berkeleyvision.org/finetune_flickr_style.caffemodel" -o models/flickrstyle/finetune_flickr_style.caffemodel
+fi
