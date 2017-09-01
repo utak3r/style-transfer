@@ -99,6 +99,7 @@ parser.add_argument("-i", "--init", default="content", type=str, required=False,
 parser.add_argument("-r", "--ratio", default="1e4", type=str, required=False, help="style-to-content ratio")
 parser.add_argument("-n", "--num-iters", default=512, type=int, required=False, help="L-BFGS iterations")
 parser.add_argument("-l", "--length", default=512, type=float, required=False, help="maximum image length")
+parser.add_argument("-f", "--feature-scale", default=1, type=float, required=False, help="scale extracted patterns from the style image")
 parser.add_argument("-v", "--verbose", action="store_true", required=False, help="print minimization outputs")
 parser.add_argument("-o", "--output", default=None, required=False, help="output path")
 
@@ -396,7 +397,7 @@ class StyleTransfer(object):
         self.pbar.maxval = max_iter
 
     def transfer_style(self, img_style, img_content, length=512, ratio=1e5,
-                       n_iter=512, init="-1", verbose=False, callback=None):
+                       n_iter=512, init="-1", verbose=False, callback=None, feature_scale=1):
         """
             Transfers the style of the artwork to the input image.
 
@@ -427,7 +428,7 @@ class StyleTransfer(object):
         net_in = self.transformer.preprocess("data", img_style)
         gram_scale = float(img_content.size)/img_style.size
         G_style = _compute_reprs(net_in, self.net, layers, [],
-                                 gram_scale=1)[0]
+                                 gram_scale=gram_scale*feature_scale)[0]
 
         # compute content representations
         self._rescale_net(img_content)
@@ -509,7 +510,8 @@ def main(args):
     start = timeit.default_timer()
     n_iters = st.transfer_style(img_style, img_content, length=args.length, 
                                 init=args.init, ratio=np.float(args.ratio), 
-                                n_iter=args.num_iters, verbose=args.verbose)
+                                n_iter=args.num_iters, verbose=args.verbose, 
+                                feature_scale=args.feature_scale)
     end = timeit.default_timer()
     logging.info("Ran {0} iterations in {1:.0f}s.".format(n_iters, end-start))
     img_out = st.get_generated()
